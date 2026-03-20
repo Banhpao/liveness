@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Main Attendance Camera Feed</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanner-frame {
+            box-shadow: 0 0 0 4px rgba(19, 91, 236, 0.2), inset 0 0 0 2px rgba(19, 91, 236, 0.5);
+        }
+    </style>
+</head>
+
+
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] antialiased">
+<div class="flex h-screen w-full flex-col overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex h-16 items-center justify-between border-b border-[#e5e7eb] bg-white px-8 dark:border-[#2a303c] dark:bg-background-dark">
+<div class="flex items-center gap-4 text-[#111318] dark:text-white">
+<div class="flex h-8 w-8 items-center justify-center rounded bg-primary text-white">
+<span class="material-symbols-outlined text-xl">face_unlock</span>
+</div>
+<div class="flex flex-col">
+<h2 class="text-base font-bold leading-tight tracking-[-0.015em]">Attendance Kiosk Pro</h2>
+<p class="text-[10px] font-medium uppercase tracking-wider text-primary">Main Terminal - Lobby A</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-end">
+<span class="text-lg font-bold text-[#111318] dark:text-white" id="clock">09:42:15 AM</span>
+<span class="text-xs text-[#616f89]">Monday, Oct 23, 2023</span>
+</div>
+<div class="h-8 w-px bg-[#e5e7eb] dark:bg-[#2a303c]"></div>
+<div class="flex gap-2">
+<button class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f0f2f4] text-[#111318] hover:bg-gray-200 dark:bg-[#1a2130] dark:text-white">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f0f2f4] text-[#111318] hover:bg-gray-200 dark:bg-[#1a2130] dark:text-white">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Side: Real-time Camera Feed -->
+<div class="relative flex flex-[3] flex-col bg-black">
+<!-- Video Container -->
+<div class="relative flex h-full w-full items-center justify-center overflow-hidden">
+    <img
+      src="http://127.0.0.1:5000/video"
+      class="absolute inset-0 h-full w-full object-contain bg-black"
+    />
+
+
+<!-- Facial Recognition Overlay -->
+<div class="relative z-10 flex h-full w-full items-center justify-center">
+<!-- Recognition Guide Frame -->
+<div class="scanner-frame relative h-80 w-80 rounded-3xl border-2 border-primary/60">
+<!-- Corner Accents -->
+<div class="absolute -left-1 -top-1 h-8 w-8 rounded-tl-3xl border-l-4 border-t-4 border-primary"></div>
+<div class="absolute -right-1 -top-1 h-8 w-8 rounded-tr-3xl border-r-4 border-t-4 border-primary"></div>
+<div class="absolute -bottom-1 -left-1 h-8 w-8 rounded-bl-3xl border-b-4 border-l-4 border-primary"></div>
+<div class="absolute -bottom-1 -right-1 h-8 w-8 rounded-br-3xl border-b-4 border-r-4 border-primary"></div>
+<!-- Scanning Line Simulation -->
+<div class="absolute left-0 top-0 h-0.5 w-full animate-pulse bg-primary/40 shadow-[0_0_15px_rgba(19,91,236,1)]"></div>
+</div>
+<!-- Status Badge -->
+<div class="absolute bottom-12 flex items-center gap-3 rounded-full bg-black/60 px-6 py-3 backdrop-blur-md">
+<div class="flex h-3 w-3 animate-pulse rounded-full bg-primary"></div>
+<span class="text-sm font-medium text-white tracking-wide uppercase">Position face within the frame</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Sidebar Navigation and Logs -->
+<aside class="flex w-[420px] flex-col bg-white dark:bg-background-dark border-l border-[#e5e7eb] dark:border-[#2a303c]">
+<div class="flex flex-col h-full">
+<!-- Section Header -->
+<div class="p-6 border-b border-[#e5e7eb] dark:border-[#2a303c]">
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-xl font-bold text-[#111318] dark:text-white">Recent Attendance</h2>
+<span
+  id="today-count"
+  class="bg-primary/10 text-primary text-xs font-bold px-2.5 py-1 rounded-full uppercase">
+  Today: 0
+</span>
+</div>
+<p class="text-sm text-[#616f89]">Real-time tracking of employee check-ins</p>
+</div>
+<!-- Attendance List -->
+<!-- Attendance List -->
+<div class="flex-1 overflow-y-auto px-2 py-4">
+  <div id="attendance-list" class="space-y-1"></div>
+</div>
+
+
+<!-- Sidebar Footer Actions -->
+<div class="p-6 border-t border-[#e5e7eb] dark:border-[#2a303c] bg-gray-50 dark:bg-[#151b28]">
+<div class="flex flex-col gap-3">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-bold text-white shadow-lg transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[20px]">id_card</span>
+                                MANUAL PIN ENTRY
+                            </button>
+<p class="text-center text-[11px] font-medium text-[#616f89]">
+                                Facial recognition offline? Use your unique employee PIN.
+                            </p>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer Bar -->
+<footer class="flex h-12 items-center justify-between border-t border-[#e5e7eb] bg-white px-8 dark:border-[#2a303c] dark:bg-background-dark">
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-[11px] font-bold text-[#111318] dark:text-white uppercase tracking-wider">System Online</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="h-2 w-2 rounded-full bg-green-500"></div>
+<span class="text-[11px] font-bold text-[#111318] dark:text-white uppercase tracking-wider">Camera: Active (HD)</span>
+</div>
+</div>
+<div class="text-[11px] text-[#616f89]">
+                © 2023 FaceLink Technologies • Version 4.2.0-stable
+            </div>
+</footer>
+</div>
+
+<!-- ================= SUCCESS OVERLAY ================= -->
+<div id="success-overlay"
+     class="fixed inset-0 z-[999] hidden flex items-center justify-center">
+
+  <!-- backdrop -->
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
+
+  <!-- content -->
+  <div class="relative z-10 w-full max-w-[520px]">
+    <!-- ⬇⬇⬇ DÁN NGUYÊN CỤC <main>...</main> CỦA success.html VÀO ĐÂY ⬇⬇⬇ -->
+     <!-- Success Panel -->
+        <main class="flex-1 flex items-center justify-center p-6">
+        <div class="max-w-[520px] w-full bg-white dark:bg-[#1c2331] shadow-2xl rounded-xl overflow-hidden border border-gray-100 dark:border-gray-800">
+
+        <!-- Header -->
+        <div class="flex flex-col items-center pt-10 pb-4">
+        <div class="size-20 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-green-500 text-5xl">check_circle</span>
+        </div>
+        <h4 class="text-green-600 dark:text-green-400 text-xl font-bold text-center">
+            Check-in Successful
+        </h4>
+        </div>
+
+        <!-- Profile -->
+        <div class="flex p-4 border-b border-gray-100 dark:border-gray-800">
+        <div class="w-full flex flex-col items-center gap-4">
+
+        <div id="user-avatar"
+            class="bg-center bg-no-repeat aspect-square bg-cover rounded-xl shadow-md min-h-40 w-40 ring-4 ring-white dark:ring-gray-700"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA9txT0WN2F9lwXdMcvfILaMeSdMWPEUvQLjtkHVCM6mpmXbX8CBNN0-LKC1QcdWj2UlS8oh_E93CPJTdIgCgnXgujD7gCpAWSrl40FRSFeQgtB0mvkO3-DnC3vQErw62fhEesi1Y5yun_5mbVQdYNPFYTFSzJC8iZakfj1sdxZLCdrMkdXSsrq4CuBR1-brSvM_BX4U6iqA0SmvJG1FbI9iLSSJAjfhOll-LEy1Ea5XxrmXMYpoxkkAs0vu5oQHIZOR7aPXATY8BKd");'>
+        </div>
+
+        <p id="user-name"
+        class="text-[#111318] dark:text-white text-[24px] font-bold text-center">
+        --
+        </p>
+
+        <p class="text-[#616f89] dark:text-gray-400 text-base font-medium flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm text-primary">verified</span>
+        Verified via Facial Recognition
+        </p>
+
+        <div class="mt-4 px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+        <p id="checkin-time"
+            class="text-[#111318] dark:text-gray-300 text-lg font-semibold text-center">
+            --
+        </p>
+        <p id="checkin-date"
+            class="text-[#616f89] dark:text-gray-500 text-xs font-medium text-center uppercase">
+            --
+        </p>
+        </div>
+
+        </div>
+        </div>
+
+        <!-- Rescan -->
+        <div class="p-4">
+        <div class="flex flex-col gap-4 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20 p-5 md:flex-row md:items-center md:justify-between">
+        <div>
+            <p class="text-[#111318] dark:text-white font-bold">Not you?</p>
+            <p class="text-[#616f89] dark:text-gray-400 text-sm">
+            If the system misidentified you, please try again.
+            </p>
+        </div>
+        <button id="btn-rescan"
+                class="flex items-center justify-center h-10 px-4 bg-primary text-white text-sm font-bold rounded-lg">
+            <span class="material-symbols-outlined text-sm mr-2">refresh</span>
+            Re-scan
+        </button>
+        </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="flex flex-col gap-2 p-4 pt-0">
+        <div class="flex justify-between items-center">
+        <p class="text-[#616f89] dark:text-gray-400 text-sm">Returning to scan screen in...</p>
+        <p id="countdown-text" class="text-primary text-sm font-bold">3s</p>
+        </div>
+        <div class="rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+        <div id="countdown-bar"
+            class="h-1.5 rounded-full bg-primary"
+            style="width: 70%;">
+        </div>
+        </div>
+        </div>
+        <p id="footer-info"
+            class="text-center text-xs text-gray-400 mt-2">
+        </p>
+
+        </div>
+        </main>
+  </div>
+</div>
+
+
+
+<script type="module">
+/* ================= FIREBASE (CHỈ ĐỂ VẼ SIDEBAR) ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  limitToLast,
+  query
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  databaseURL: "https://hptproject-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* ================= DOM ================= */
+const listEl  = document.getElementById("attendance-list");
+const countEl = document.getElementById("today-count");
+
+const overlay = document.getElementById("success-overlay");
+const $ = (id) => document.getElementById(id);
+
+/* ================= STATE ================= */
+let overlayVisible = false;
+let countdownTimer = null;
+
+/* ================= CONFIG ================= */
+const AUTO_RETURN_SEC = 3;
+
+/* ================= SUCCESS OVERLAY ================= */
+function showSuccessOverlay(data) {
+  if (overlayVisible) return;
+  overlayVisible = true;
+
+  $("user-name").innerText    = data.name || "--";
+  $("checkin-time").innerText = data.time || "--";
+  $("checkin-date").innerText = data.date || "--";
+
+  $("footer-info").innerText =
+    `ID: ${data.date}-${data.name} | Terminal ${data.terminal} | Kiosk v2.1.0`;
+
+  overlay.classList.remove("hidden");
+  startCountdown();
+}
+
+function hideSuccessOverlay() {
+  overlay.classList.add("hidden");
+  overlayVisible = false;
+}
+
+/* ================= COUNTDOWN ================= */
+function startCountdown() {
+  let remaining = AUTO_RETURN_SEC;
+
+  const text = $("countdown-text");
+  const bar  = $("countdown-bar");
+
+  text.innerText = `${remaining}s`;
+  bar.style.width = "100%";
+
+  countdownTimer = setInterval(() => {
+    remaining--;
+    text.innerText = `${remaining}s`;
+    bar.style.width = `${(remaining / AUTO_RETURN_SEC) * 100}%`;
+
+    if (remaining <= 0) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+
+      // ✅ XÁC NHẬN → GHI FIREBASE
+      fetch("/api/commit", { method: "POST" });
+
+      hideSuccessOverlay();
+    }
+  }, 1000);
+
+  $("btn-rescan").onclick = () => {
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+
+    // ❌ HỦY → KHÔNG GHI FIREBASE
+    fetch("/api/reset", { method: "POST" });
+
+    hideSuccessOverlay();
+  };
+}
+
+/* ================= POLL BACKEND SUCCESS ================= */
+/* 🔥 NGUỒN SỰ THẬT DUY NHẤT */
+setInterval(async () => {
+  if (overlayVisible) return;
+
+  try {
+    const res = await fetch("/api/pending");
+    const json = await res.json();
+
+    if (!json.ok) return;
+
+    showSuccessOverlay({
+      name: json.data.name,
+      time: json.data.time,
+      date: json.data.date,
+      terminal: json.data.terminal
+    });
+
+  } catch (err) {
+    console.error("pending poll error", err);
+  }
+}, 300);
+
+/* ================= FIREBASE SIDEBAR ================= */
+const attendanceRef = query(
+  ref(db, "attendance"),
+  limitToLast(10)
+);
+
+onValue(attendanceRef, (snapshot) => {
+  const data = snapshot.val();
+  if (!data) {
+    listEl.innerHTML = "";
+    countEl.textContent = "Today: 0";
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10); // yyyy-mm-dd
+  const todayData = data[today];
+
+  listEl.innerHTML = "";
+
+  if (!todayData) {
+    countEl.textContent = "Today: 0";
+    return;
+  }
+
+  const entries = Object.entries(todayData); 
+  countEl.textContent = `Today: ${entries.length}`;
+
+  for (const [name, info] of entries.reverse()) {
+    const div = document.createElement("div");
+    div.className =
+      "flex items-center gap-3 rounded-md px-3 py-2 hover:bg-gray-100";
+
+    div.innerHTML = `
+      <div class="h-8 w-8 flex items-center justify-center rounded-full bg-primary/10 text-primary font-bold">
+        ${name[0].toUpperCase()}
+      </div>
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold">${name}</span>
+        <span class="text-xs text-gray-500">${info.time}</span>
+      </div>
+    `;
+
+    listEl.appendChild(div);
+  }
+});
+
+</script>
+
+
+
+</body></html>
